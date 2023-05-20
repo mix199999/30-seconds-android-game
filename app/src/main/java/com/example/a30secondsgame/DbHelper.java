@@ -2,130 +2,149 @@ package com.example.a30secondsgame;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.AsyncTask;
-import android.os.StrictMode;
-import android.util.Log;
 
-import net.sourceforge.jtds.jdbc.JtdsConnection;
+import com.example.a30secondsgame.Models.ModelTaskFillBlank;
+import com.example.a30secondsgame.Models.ModelTaskMatchSynonyms;
+import com.example.a30secondsgame.Models.ModelTaskMultipleChoice;
+import com.example.a30secondsgame.Models.ModelTaskTranslateSentences;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+public class DbHelper extends SQLiteOpenHelper {
 
-public class DbHelper {
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "tasksManager";
 
-    private static final String SERVER_ADDRESS = "10.0.2.2";
-    private static final String PORT = "1433";
-    private static final String DATABASE_NAME = "ANDROID_GAME_PROJECT";
-    private static final String USERNAME = "user";
-    private static final String PASSWORD = "user";
+    // Tabela dla Fill In The Blank
+    private static final String TABLE_TASKS_FILL_BLANK = "tasks_fill_blank";
+    private static final String KEY_ID_FILL = "id";
+    private static final String KEY_SENTENCE = "sentence";
+    private static final String KEY_CORRECT_ANSWER = "correct_answer";
+    private static final String KEY_WRONG_ANSWER1 = "wrong_answer1";
+    private static final String KEY_WRONG_ANSWER2 = "wrong_answer2";
+    private static final String KEY_WRONG_ANSWER3 = "wrong_answer3";
 
-    private static final String CONNECTION_STRING = "jdbc:jtds:sqlserver://" + SERVER_ADDRESS + ":" + PORT +
-            ";databaseName=" + DATABASE_NAME +
-            ";user=" + USERNAME +
-            ";password=" + PASSWORD +
-            ";ssl=request";
+    // Tabela dla Match Synonyms
+    private static final String TABLE_TASKS_MATCH_SYNONYMS = "tasks_match_synonyms";
+    private static final String KEY_ID_SYN = "id";
+    private static final String KEY_WORD1 = "word1";
+    private static final String KEY_WORD2 = "word2";
 
-    private Connection getConnection() {
-        Connection connection = null;
-        try {
-            Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            connection = DriverManager.getConnection(CONNECTION_STRING);
-        } catch (ClassNotFoundException | SQLException e) {
-            Log.e("DbHelper", "Error while connecting to the database", e);
-        }
-        return connection;
+    // Tabela dla Multiple Choice
+    private static final String TABLE_TASKS_MULTIPLE_CHOICE = "tasks_multiple_choice";
+    private static final String KEY_ID_MC = "id";
+    private static final String KEY_QUESTION = "question";
+    private static final String KEY_CHOICE1 = "choice1";
+    private static final String KEY_CHOICE2 = "choice2";
+    private static final String KEY_CHOICE3 = "choice3";
+    private static final String KEY_ANSWER = "answer";
+
+    // Tabela dla Translate Sentences
+    private static final String TABLE_TASKS_TRANSLATE_SENTENCES = "tasks_translate_sentences";
+    private static final String KEY_ID_TS = "id";
+    private static final String KEY_QUESTION_TS = "question";
+    private static final String KEY_ANSWER_TS = "answer";
+
+    public DbHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public interface CheckUserCallback {
-        void onUserChecked(boolean userExists);
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        String CREATE_TASKS_FILL_BLANK_TABLE =  "CREATE TABLE " + "TABLE_TASKS_FILL_BLANK_TABLE" + "("
+                + "KEY_ID" + " INTEGER PRIMARY KEY,"
+                        + KEY_SENTENCE + " TEXT,"
+                        + KEY_CORRECT_ANSWER + " TEXT,"
+                        + KEY_WRONG_ANSWER1 + " TEXT,"
+                        + KEY_WRONG_ANSWER2 + " TEXT,"
+                        + KEY_WRONG_ANSWER3 + " TEXT" + ")";
+
+        db.execSQL(CREATE_TASKS_FILL_BLANK_TABLE);
+
+        String CREATE_TASKS_MATCH_SYNONYMS_TABLE = "CREATE TABLE " + TABLE_TASKS_MATCH_SYNONYMS + "("
+                + KEY_ID_SYN + " INTEGER PRIMARY KEY,"
+                + KEY_WORD1 + " TEXT,"
+                + KEY_WORD2 + " TEXT" + ")";
+        db.execSQL(CREATE_TASKS_MATCH_SYNONYMS_TABLE);
+
+        String CREATE_TASKS_MULTIPLE_CHOICE_TABLE = "CREATE TABLE " + TABLE_TASKS_MULTIPLE_CHOICE + "("
+                + KEY_ID_MC + " INTEGER PRIMARY KEY,"
+                + KEY_QUESTION + " TEXT,"
+                + KEY_CHOICE1 + " TEXT,"
+                + KEY_CHOICE2 + " TEXT,"
+                + KEY_CHOICE3 + " TEXT,"
+                + KEY_ANSWER + " TEXT" + ")";
+        db.execSQL(CREATE_TASKS_MULTIPLE_CHOICE_TABLE);
+
+        String CREATE_TASKS_TRANSLATE_SENTENCES_TABLE = "CREATE TABLE " + TABLE_TASKS_TRANSLATE_SENTENCES + "("
+                + KEY_ID_TS + " INTEGER PRIMARY KEY,"
+                + KEY_QUESTION_TS + " TEXT,"
+                + KEY_ANSWER_TS + " TEXT" + ")";
+        db.execSQL(CREATE_TASKS_TRANSLATE_SENTENCES_TABLE);
     }
 
-    public void checkUser(User user, CheckUserCallback callback) {
-        new CheckUserTask(callback).execute(user);
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS_FILL_BLANK);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS_MATCH_SYNONYMS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS_MULTIPLE_CHOICE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS_TRANSLATE_SENTENCES);
+        onCreate(db);
     }
 
-    private class CheckUserTask extends AsyncTask<User, Void, Boolean> {
-        private final CheckUserCallback callback;
 
-        CheckUserTask(CheckUserCallback callback) {
-            this.callback = callback;
-        }
+    public long addTaskFillBlank(ModelTaskFillBlank taskFillBlank) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
 
-        @Override
-        protected Boolean doInBackground(User... users) {
-            String query = "SELECT * FROM users WHERE username = ? AND password = ?";
-            User user = users[0];
+        values.put(KEY_SENTENCE, taskFillBlank.getSentence());
+        values.put(KEY_CORRECT_ANSWER, taskFillBlank.getCorrect_answer());
+        values.put(KEY_WRONG_ANSWER1, taskFillBlank.getWrong_answer1());
+        values.put(KEY_WRONG_ANSWER2, taskFillBlank.getWrong_answer2());
+        values.put(KEY_WRONG_ANSWER3, taskFillBlank.getWrong_answer3());
 
-            try (Connection connection = getConnection()) {
-                if (connection != null) {
-                    PreparedStatement statement = connection.prepareStatement(query);
-                    statement.setString(1, user.getUsername());
-                    statement.setString(2, user.getPassword());
-
-                    ResultSet resultSet = statement.executeQuery();
-
-                    boolean userExists = resultSet.next();
-                    statement.close();
-                    return userExists;
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean userExists) {
-            callback.onUserChecked(userExists);
-        }
+        long newRowId = db.insert(TABLE_TASKS_FILL_BLANK, null, values);
+        db.close();
+        return newRowId;
     }
 
-    public interface AddUserCallback {
-        void onUserAdded(boolean success);
+    public long addTaskMatchSynonyms(ModelTaskMatchSynonyms taskMatchSynonyms) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_WORD1, taskMatchSynonyms.getWord1());
+        values.put(KEY_WORD2, taskMatchSynonyms.getWord2());
+
+        long newRowId = db.insert(TABLE_TASKS_MATCH_SYNONYMS, null, values);
+        db.close();
+        return newRowId;
     }
 
-    public void addUser(User user, AddUserCallback callback) {
-        new AddUserTask(callback).execute(user);
+    public long addTaskMultipleChoice(ModelTaskMultipleChoice taskMultipleChoice) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_QUESTION, taskMultipleChoice.getQuestion());
+        values.put(KEY_CHOICE1, taskMultipleChoice.getChoice1());
+        values.put(KEY_CHOICE2, taskMultipleChoice.getChoice2());
+        values.put(KEY_CHOICE3, taskMultipleChoice.getChoice3());
+        values.put(KEY_ANSWER, taskMultipleChoice.getAnswer());
+
+        long newRowId = db.insert(TABLE_TASKS_MULTIPLE_CHOICE, null, values);
+        db.close();
+        return newRowId;
     }
 
-    private class AddUserTask extends AsyncTask<User, Void, Boolean> {
-        private final AddUserCallback callback;
+    public long addTaskTranslateSentences(ModelTaskTranslateSentences taskTranslateSentences) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
 
-        AddUserTask(AddUserCallback callback) {
-            this.callback = callback;
-        }
+        values.put(KEY_QUESTION_TS, taskTranslateSentences.getQuestion());
+        values.put(KEY_ANSWER_TS, taskTranslateSentences.getAnswer());
 
-        @Override
-        protected Boolean doInBackground(User... users) {
-            String query = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-            User user = users[0];
-
-            try (Connection connection = getConnection()) {
-                if (connection != null) {
-                    PreparedStatement statement = connection.prepareStatement(query);
-                    statement.setString(1, user.getUsername());
-                    statement.setString(2, user.getPassword());
-                    statement.setString(3, user.getEmail());
-
-                    int rowsAffected = statement.executeUpdate();
-                    statement.close();
-                    return rowsAffected > 0;
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            callback.onUserAdded(success);
-        }
+        long newRowId = db.insert(TABLE_TASKS_TRANSLATE_SENTENCES, null, values);
+        db.close();
+        return newRowId;
     }
+
 }
