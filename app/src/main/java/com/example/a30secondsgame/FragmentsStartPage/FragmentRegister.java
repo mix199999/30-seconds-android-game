@@ -1,4 +1,4 @@
-package com.example.a30secondsgame;
+package com.example.a30secondsgame.FragmentsStartPage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,6 +12,9 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.a30secondsgame.R;
+import com.example.a30secondsgame.User;
 
 public class FragmentRegister extends Fragment {
 

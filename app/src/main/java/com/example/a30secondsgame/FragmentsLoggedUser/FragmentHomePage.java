@@ -1,18 +1,17 @@
-package com.example.a30secondsgame;
+package com.example.a30secondsgame.FragmentsLoggedUser;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.a30secondsgame.R;
+import com.example.a30secondsgame.User;
+
 public class FragmentHomePage extends Fragment {
 
 
@@ -22,7 +21,7 @@ public class FragmentHomePage extends Fragment {
 
     Button playBtn;
     TextView usernameText;
-    private  User user;
+    private User user;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

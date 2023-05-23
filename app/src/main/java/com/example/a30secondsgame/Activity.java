@@ -8,6 +8,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.example.a30secondsgame.ApiService.ApiResponseCallback;
+import com.example.a30secondsgame.FragmentsStartPage.CallbackFragment;
+import com.example.a30secondsgame.FragmentsStartPage.FragmentLogin;
+import com.example.a30secondsgame.FragmentsStartPage.FragmentRegister;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -113,11 +117,7 @@ public class Activity extends AppCompatActivity implements CallbackFragment, Fra
         });
 
         login.execute();
-        try {
-            login.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
@@ -153,17 +153,12 @@ public class Activity extends AppCompatActivity implements CallbackFragment, Fra
 
             @Override
             public void onError(String error) {
-                Toast.makeText(Activity.this, error, Toast.LENGTH_LONG).show();
+                replaceFragment("login"); // Przełącz z powrotem na ekran logowania
 
             }
         });
-
         register.execute();
-        try {
-            register.get(); // Add this line to make the call synchronous
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
+
     }
 
 

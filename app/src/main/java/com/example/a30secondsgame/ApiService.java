@@ -1,6 +1,7 @@
 package com.example.a30secondsgame;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -80,6 +81,7 @@ public class ApiService extends AsyncTask<String,Void,String>
     @Override
     protected  void onPostExecute(String result)
     {
+        Log.d("ApiService", "onPostExecute: " + result);
         if(result == null)
         {
             callback.onError("nie mozna polaczyc sie z serwerem");

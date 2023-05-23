@@ -2,149 +2,292 @@ package com.example.a30secondsgame;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.example.a30secondsgame.Models.ModelTaskFillBlank;
-import com.example.a30secondsgame.Models.ModelTaskMatchSynonyms;
-import com.example.a30secondsgame.Models.ModelTaskMultipleChoice;
-import com.example.a30secondsgame.Models.ModelTaskTranslateSentences;
-
+import com.example.a30secondsgame.Models.Models.*;
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "tasksManager";
+    private static final String DATABASE_NAME = "tasksManagerDb";
 
-    // Tabela dla Fill In The Blank
-    private static final String TABLE_TASKS_FILL_BLANK = "tasks_fill_blank";
-    private static final String KEY_ID_FILL = "id";
-    private static final String KEY_SENTENCE = "sentence";
-    private static final String KEY_CORRECT_ANSWER = "correct_answer";
-    private static final String KEY_WRONG_ANSWER1 = "wrong_answer1";
-    private static final String KEY_WRONG_ANSWER2 = "wrong_answer2";
-    private static final String KEY_WRONG_ANSWER3 = "wrong_answer3";
+    private static final String KEY_ID = "id";
+    private static final String KEY_TASK_ID = "task_id";
 
-    // Tabela dla Match Synonyms
-    private static final String TABLE_TASKS_MATCH_SYNONYMS = "tasks_match_synonyms";
-    private static final String KEY_ID_SYN = "id";
-    private static final String KEY_WORD1 = "word1";
-    private static final String KEY_WORD2 = "word2";
+    private static final String KEY_QUESTION = "question_text";
 
-    // Tabela dla Multiple Choice
-    private static final String TABLE_TASKS_MULTIPLE_CHOICE = "tasks_multiple_choice";
-    private static final String KEY_ID_MC = "id";
-    private static final String KEY_QUESTION = "question";
-    private static final String KEY_CHOICE1 = "choice1";
-    private static final String KEY_CHOICE2 = "choice2";
-    private static final String KEY_CHOICE3 = "choice3";
+    private static final String KEY_ANSWER_TEXT = "answer_text";
+
+    private static final String KEY_IS_CORRECT= "is_correct";
+
+    private static final String KEY_FIRST_ANSWER = "answer1";
+    private static final String KEY_SECOND_ANSWER = "answer2";
     private static final String KEY_ANSWER = "answer";
 
-    // Tabela dla Translate Sentences
-    private static final String TABLE_TASKS_TRANSLATE_SENTENCES = "tasks_translate_sentences";
-    private static final String KEY_ID_TS = "id";
-    private static final String KEY_QUESTION_TS = "question";
-    private static final String KEY_ANSWER_TS = "answer";
+    private static final String KEY_LANGUAGE_CODE = "language_code";
+    private static final String KEY_LANGUAGE_ID = "language_id";
+
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+
+    private void createFillInTheBlanksTables(SQLiteDatabase db)
+    {
+        String CREATE_ANSWERS_TASKS_FILL_BLANK_TABLE =  "CREATE TABLE IF NOT EXISTS " +
+                "ANSWERS_TASKS_FILL_IN_THE_BLANKS" + "("
+                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_TASK_ID + " INTEGER,"
+                + KEY_LANGUAGE_ID + " INTEGER,"
+                + KEY_ANSWER_TEXT + " TEXT,"
+                + KEY_IS_CORRECT + " INTEGER"
+                + ")";
+
+        db.execSQL(CREATE_ANSWERS_TASKS_FILL_BLANK_TABLE);
+
+
+        String CREATE_QUESTIONS_TASKS_FILL_BLANK_TABLE =  "CREATE TABLE IF NOT EXISTS " +
+                "QUESTIONS_TASKS_FILL_IN_THE_BLANK" + "("
+                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_TASK_ID + " TEXT,"
+                + KEY_LANGUAGE_ID + " INTEGER,"
+                + KEY_QUESTION + " TEXT"
+                +  ")";
+
+        db.execSQL(CREATE_QUESTIONS_TASKS_FILL_BLANK_TABLE);
+
+    }
+
+
+    private void createTranslateSentencesTable(SQLiteDatabase db)
+    {
+        String CREATE_ANSWERS_TASKS_TRANSLATE_SENTENCES =  "CREATE TABLE IF NOT EXISTS " +
+                "ANSWERS_TASKS_TRANSLATE_SENTENCES" + "("
+                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_TASK_ID + " INTEGER,"
+                + KEY_LANGUAGE_ID + " INTEGER,"
+                + KEY_ANSWER + " TEXT"
+                + ")";
+
+        db.execSQL(CREATE_ANSWERS_TASKS_TRANSLATE_SENTENCES);
+
+    }
+
+
+
+    private void createMultipleChoiceTables(SQLiteDatabase db)
+    {
+        String CREATE_ANSWERS_TASKS_MULTIPLE_CHOICE =  "CREATE TABLE IF NOT EXISTS " +
+                "ANSWERS_TASKS_MULTIPLE_CHOICE" + "("
+                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_TASK_ID + " INTEGER,"
+                + KEY_LANGUAGE_ID + " INTEGER,"
+                + KEY_ANSWER_TEXT + " TEXT,"
+                + KEY_IS_CORRECT + " INTEGER"
+                + ")";
+        db.execSQL(CREATE_ANSWERS_TASKS_MULTIPLE_CHOICE);
+
+
+
+
+        String CREATE_QUESTIONS_TASKS_MULTIPLE_CHOICE =  "CREATE TABLE IF NOT EXISTS " +
+                "QUESTIONS_TASKS_MULTIPLE_CHOICE" + "("
+                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_TASK_ID + " TEXT,"
+                + KEY_LANGUAGE_ID + " INTEGER,"
+                + KEY_QUESTION + " TEXT"
+                +  ")";
+
+        db.execSQL(CREATE_QUESTIONS_TASKS_MULTIPLE_CHOICE);
+
+
+    }
+
+
+    private void createMatchSynonymsTable(SQLiteDatabase db)
+    {
+        String CREATE_ANSWERS_TASKS_MATCH_SYNONYMS =  "CREATE TABLE IF NOT EXISTS " +
+                "ANSWERS_TASKS_MATCH_SYNONYMS" + "("
+                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_TASK_ID + " INTEGER,"
+                + KEY_LANGUAGE_ID + " INTEGER,"
+                + KEY_FIRST_ANSWER + " TEXT,"
+                + KEY_SECOND_ANSWER + " TEXT"
+                + ")";
+
+        db.execSQL(CREATE_ANSWERS_TASKS_MATCH_SYNONYMS);
+
+    }
+
+    private void createLanguagesTable(SQLiteDatabase db)
+    {
+        String CREATE_LANGUAGES =  "CREATE TABLE IF NOT EXISTS " +
+                "LANGUAGES" + "("
+                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_LANGUAGE_CODE + " TEXT"
+                + ")";
+
+        db.execSQL(CREATE_LANGUAGES);
+
+    }
+
+
+
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TASKS_FILL_BLANK_TABLE =  "CREATE TABLE " + "TABLE_TASKS_FILL_BLANK_TABLE" + "("
-                + "KEY_ID" + " INTEGER PRIMARY KEY,"
-                        + KEY_SENTENCE + " TEXT,"
-                        + KEY_CORRECT_ANSWER + " TEXT,"
-                        + KEY_WRONG_ANSWER1 + " TEXT,"
-                        + KEY_WRONG_ANSWER2 + " TEXT,"
-                        + KEY_WRONG_ANSWER3 + " TEXT" + ")";
+        createMatchSynonymsTable(db);
+        createFillInTheBlanksTables(db);
+        createTranslateSentencesTable(db);
+        createMultipleChoiceTables(db);
+        createLanguagesTable(db);
 
-        db.execSQL(CREATE_TASKS_FILL_BLANK_TABLE);
-
-        String CREATE_TASKS_MATCH_SYNONYMS_TABLE = "CREATE TABLE " + TABLE_TASKS_MATCH_SYNONYMS + "("
-                + KEY_ID_SYN + " INTEGER PRIMARY KEY,"
-                + KEY_WORD1 + " TEXT,"
-                + KEY_WORD2 + " TEXT" + ")";
-        db.execSQL(CREATE_TASKS_MATCH_SYNONYMS_TABLE);
-
-        String CREATE_TASKS_MULTIPLE_CHOICE_TABLE = "CREATE TABLE " + TABLE_TASKS_MULTIPLE_CHOICE + "("
-                + KEY_ID_MC + " INTEGER PRIMARY KEY,"
-                + KEY_QUESTION + " TEXT,"
-                + KEY_CHOICE1 + " TEXT,"
-                + KEY_CHOICE2 + " TEXT,"
-                + KEY_CHOICE3 + " TEXT,"
-                + KEY_ANSWER + " TEXT" + ")";
-        db.execSQL(CREATE_TASKS_MULTIPLE_CHOICE_TABLE);
-
-        String CREATE_TASKS_TRANSLATE_SENTENCES_TABLE = "CREATE TABLE " + TABLE_TASKS_TRANSLATE_SENTENCES + "("
-                + KEY_ID_TS + " INTEGER PRIMARY KEY,"
-                + KEY_QUESTION_TS + " TEXT,"
-                + KEY_ANSWER_TS + " TEXT" + ")";
-        db.execSQL(CREATE_TASKS_TRANSLATE_SENTENCES_TABLE);
     }
+
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS_FILL_BLANK);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS_MATCH_SYNONYMS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS_MULTIPLE_CHOICE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS_TRANSLATE_SENTENCES);
+        db.execSQL("DROP TABLE IF EXISTS LANGUAGES" );
+        db.execSQL("DROP TABLE IF EXISTS ANSWERS_TASKS_TRANSLATE_SENTENCES" );
+        db.execSQL("DROP TABLE IF EXISTS QUESTIONS_TASKS_FILL_IN_THE_BLANK" );
+        db.execSQL("DROP TABLE IF EXISTS ANSWERS_TASKS_MULTIPLE_CHOICE" );
+        db.execSQL("DROP TABLE IF EXISTS ANSWERS_TASKS_MATCH_SYNONYMS" );
+        db.execSQL("DROP TABLE IF EXISTS QUESTIONS_TASKS_MULTIPLE_CHOICE" );
+        db.execSQL("DROP TABLE IF EXISTS ANSWERS_TASKS_FILL_IN_THE_BLANKS" );
+
         onCreate(db);
     }
 
 
-    public long addTaskFillBlank(ModelTaskFillBlank taskFillBlank) {
+    public long addAnswerTaskTranslateSentences(AnswerTaskTranslateSentences taskTranslateSentences) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(KEY_SENTENCE, taskFillBlank.getSentence());
-        values.put(KEY_CORRECT_ANSWER, taskFillBlank.getCorrect_answer());
-        values.put(KEY_WRONG_ANSWER1, taskFillBlank.getWrong_answer1());
-        values.put(KEY_WRONG_ANSWER2, taskFillBlank.getWrong_answer2());
-        values.put(KEY_WRONG_ANSWER3, taskFillBlank.getWrong_answer3());
+        values.put(KEY_TASK_ID, taskTranslateSentences.getTaskId());
+        values.put(KEY_LANGUAGE_ID,taskTranslateSentences.getLanguageId());
+        values.put(KEY_ANSWER, taskTranslateSentences.getAnswer());
 
-        long newRowId = db.insert(TABLE_TASKS_FILL_BLANK, null, values);
+        long newRowId = db.insert("ANSWERS_TASKS_TRANSLATE_SENTENCES", null, values);
         db.close();
         return newRowId;
     }
 
-    public long addTaskMatchSynonyms(ModelTaskMatchSynonyms taskMatchSynonyms) {
+    public long addAnswerTaskMultipleChoice(AnswerTaskMultipleChoice taskMultipleChoice) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(KEY_WORD1, taskMatchSynonyms.getWord1());
-        values.put(KEY_WORD2, taskMatchSynonyms.getWord2());
+        values.put(KEY_TASK_ID, taskMultipleChoice.getTaskId());
+        values.put(KEY_LANGUAGE_ID,taskMultipleChoice.getLanguageId());
 
-        long newRowId = db.insert(TABLE_TASKS_MATCH_SYNONYMS, null, values);
+        long newRowId = db.insert("ANSWERS_TASKS_MULTIPLE_CHOICE", null, values);
         db.close();
         return newRowId;
     }
 
-    public long addTaskMultipleChoice(ModelTaskMultipleChoice taskMultipleChoice) {
+    public long addQuestionTaskMultipleChoice(QuestionTaskMultipleChoice taskMultipleChoice) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(KEY_QUESTION, taskMultipleChoice.getQuestion());
-        values.put(KEY_CHOICE1, taskMultipleChoice.getChoice1());
-        values.put(KEY_CHOICE2, taskMultipleChoice.getChoice2());
-        values.put(KEY_CHOICE3, taskMultipleChoice.getChoice3());
-        values.put(KEY_ANSWER, taskMultipleChoice.getAnswer());
+        values.put(KEY_TASK_ID, taskMultipleChoice.getTaskId());
+        values.put(KEY_LANGUAGE_ID,taskMultipleChoice.getLanguageId());
+        values.put(KEY_QUESTION, taskMultipleChoice.getQuestionText());
 
-        long newRowId = db.insert(TABLE_TASKS_MULTIPLE_CHOICE, null, values);
+        long newRowId = db.insert("QUESTIONS_TASKS_MULTIPLE_CHOICE", null, values);
         db.close();
         return newRowId;
     }
 
-    public long addTaskTranslateSentences(ModelTaskTranslateSentences taskTranslateSentences) {
+    public long addAnswerTaskMatchSynonyms(AnswerTaskMatchSynonyms taskMatchSynonyms ) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(KEY_QUESTION_TS, taskTranslateSentences.getQuestion());
-        values.put(KEY_ANSWER_TS, taskTranslateSentences.getAnswer());
 
-        long newRowId = db.insert(TABLE_TASKS_TRANSLATE_SENTENCES, null, values);
+        values.put(KEY_TASK_ID, taskMatchSynonyms.getTaskId());
+        values.put(KEY_LANGUAGE_ID,taskMatchSynonyms.getLanguageId());
+        values.put(KEY_FIRST_ANSWER, taskMatchSynonyms.getAnswer1());
+        values.put(KEY_SECOND_ANSWER, taskMatchSynonyms.getAnswer2());
+
+        long newRowId = db.insert("ANSWERS_TASKS_MATCH_SYNONYMS", null, values);
         db.close();
         return newRowId;
+    }
+
+
+
+    public long addAnswerTaskFillInTheBlanks(AnswerTaskFillInTheBlanks task ) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_TASK_ID, task.getTaskId());
+        values.put(KEY_LANGUAGE_ID,task.getLanguageId());
+        values.put(KEY_ANSWER_TEXT, task.getAnswerText());
+        values.put(KEY_IS_CORRECT, task.isCorrect());
+
+
+        long newRowId = db.insert("ANSWERS_TASKS_FILL_IN_THE_BLANKS", null, values);
+        db.close();
+        return newRowId;
+    }
+
+    public long addQuestionTaskFillInTheBlanks(QuestionTaskFillInTheBlanks task ) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_TASK_ID, task.getTaskId());
+        values.put(KEY_LANGUAGE_ID,task.getLanguageId());
+        values.put(KEY_QUESTION, task.getQuestionText());
+
+
+        long newRowId = db.insert("QUESTIONS_TASKS_FILL_IN_THE_BLANK", null, values);
+        db.close();
+        return newRowId;
+    }
+
+
+
+    public long addLanguage(Language task ) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_LANGUAGE_CODE, task.getLanguageCode());
+        long newRowId = db.insert("LANGUAGES", null, values);
+        db.close();
+        return newRowId;
+    }
+
+
+    public Cursor getTable(String tableName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + tableName, null);
+    }
+
+    public Cursor getAnswersTasksFillInTheBlanksTable() {
+        return getTable("ANSWERS_TASKS_FILL_IN_THE_BLANKS");
+    }
+
+    public Cursor getQuestionsTasksFillInTheBlanksTable() {
+        return getTable("QUESTIONS_TASKS_FILL_IN_THE_BLANK");
+    }
+
+    public Cursor getAnswersTasksTranslateSentencesTable() {
+        return getTable("ANSWERS_TASKS_TRANSLATE_SENTENCES");
+    }
+
+    public Cursor getAnswersTasksMultipleChoiceTable() {
+        return getTable("ANSWERS_TASKS_MULTIPLE_CHOICE");
+    }
+
+    public Cursor getQuestionsTasksMultipleChoiceTable() {
+        return getTable("QUESTIONS_TASKS_MULTIPLE_CHOICE");
+    }
+
+    public Cursor getAnswersTasksMatchSynonymsTable() {
+        return getTable("ANSWERS_TASKS_MATCH_SYNONYMS");
+    }
+
+    public Cursor getLanguagesTable() {
+        return getTable("LANGUAGES");
     }
 
 }
