@@ -13,6 +13,7 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
     <style name="Theme.30SecondsGame.Fullscreen" parent="Theme.30SecondsGame">
         <item name="android:actionBarStyle">@style/Widget.Theme.30SecondsGame.ActionBar.Fullscreen
         </item>
@@ -23,5 +24,10 @@
     <style name="ThemeOverlay.30SecondsGame.FullscreenContainer" parent="">
         <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
         <item name="fullscreenTextColor">@color/light_blue_A200</item>
+    </style>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.30SecondsGame" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 </resources>

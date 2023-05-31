@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.CancellationSignal;
+
 import com.example.a30secondsgame.Models.Models.*;
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -257,37 +259,48 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
-    public Cursor getTable(String tableName) {
+    public Cursor getTable(String tableName, String languageId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + tableName, null);
+        return db.rawQuery("SELECT * FROM " + tableName + "where language_id = "+ languageId, null);
     }
 
-    public Cursor getAnswersTasksFillInTheBlanksTable() {
-        return getTable("ANSWERS_TASKS_FILL_IN_THE_BLANKS");
+    public Cursor getAnswersTasksFillInTheBlanksTable(String languageId) {
+        return getTable("ANSWERS_TASKS_FILL_IN_THE_BLANKS", languageId);
     }
 
-    public Cursor getQuestionsTasksFillInTheBlanksTable() {
-        return getTable("QUESTIONS_TASKS_FILL_IN_THE_BLANK");
+    public Cursor getQuestionsTasksFillInTheBlanksTable(String languageId) {
+        return getTable("QUESTIONS_TASKS_FILL_IN_THE_BLANK", languageId);
     }
 
-    public Cursor getAnswersTasksTranslateSentencesTable() {
-        return getTable("ANSWERS_TASKS_TRANSLATE_SENTENCES");
+    public Cursor getAnswersTasksTranslateSentencesTable(String languageId) {
+        return getTable("ANSWERS_TASKS_TRANSLATE_SENTENCES", languageId);
     }
 
-    public Cursor getAnswersTasksMultipleChoiceTable() {
-        return getTable("ANSWERS_TASKS_MULTIPLE_CHOICE");
+    public Cursor getAnswersTasksMultipleChoiceTable(String languageId) {
+        return getTable("ANSWERS_TASKS_MULTIPLE_CHOICE", languageId);
     }
 
-    public Cursor getQuestionsTasksMultipleChoiceTable() {
-        return getTable("QUESTIONS_TASKS_MULTIPLE_CHOICE");
+    public Cursor getQuestionsTasksMultipleChoiceTable(String languageId) {
+        return getTable("QUESTIONS_TASKS_MULTIPLE_CHOICE", languageId);
     }
 
-    public Cursor getAnswersTasksMatchSynonymsTable() {
-        return getTable("ANSWERS_TASKS_MATCH_SYNONYMS");
+    public Cursor getAnswersTasksMatchSynonymsTable(String languageId) {
+        return getTable("ANSWERS_TASKS_MATCH_SYNONYMS", languageId);
     }
 
     public Cursor getLanguagesTable() {
-        return getTable("LANGUAGES");
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM languages";
+        return db.rawQuery(query, null);
     }
+    // DbHelper.java
+    public Cursor getAnswersTasksMatchSynonymsTable(int languageId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT answer1, answer2 FROM ANSWERS_TASKS_MATCH_SYNONYMS WHERE language_id = ?";
+        return db.rawQuery(query, new String[]{String.valueOf(languageId)});
+    }
+
+
 
 }

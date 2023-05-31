@@ -10,31 +10,27 @@
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.30SecondsGame"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31"
-        android:enableOnBackInvokedCallback="true"
-        >
+        tools:targetApi="31" >
         <activity
-            android:name=".PlayActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".GameActivity"
             android:exported="false"
-            android:label="@string/title_activity_play"
-            android:theme="@style/Theme.30SecondsGame.Fullscreen" />
+            android:label="@string/title_activity_game"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"/>
         <activity
             android:name=".LoggedUserMenuActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
-            />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
             android:name=".Activity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
-            >
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

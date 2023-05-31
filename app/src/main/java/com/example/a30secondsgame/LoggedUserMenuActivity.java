@@ -80,7 +80,7 @@ public class LoggedUserMenuActivity extends AppCompatActivity implements  Fragme
             Toast.makeText(this, "udalo pobrac sie wszystkie dane", Toast.LENGTH_SHORT).show();
             dbHelper = new DbHelper(this);
             loadDataToLocalDb();
-            Cursor cursor = dbHelper.getAnswersTasksFillInTheBlanksTable();
+
         }
     }
     public void addFragment()
@@ -121,7 +121,7 @@ public class LoggedUserMenuActivity extends AppCompatActivity implements  Fragme
             @Override
             public void run() {
                 dialog.dismiss();
-                Intent intent = new Intent(LoggedUserMenuActivity.this, PlayActivity.class);
+                Intent intent = new Intent(LoggedUserMenuActivity.this, GameActivity.class);
                 startActivity(intent);
             }
         }, 1500); // Czas trwania animacji (w milisekundach)
