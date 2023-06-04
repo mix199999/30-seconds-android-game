@@ -20,11 +20,11 @@ public class FragmentFillBlanks extends Fragment {
 
 TextView questionText;
 Button firstAnswerBt, secondAnswerBt, thirdAnswerBt;
-Cursor cursor;
+Cursor[] cursor;
 String firstLanguageId, secondLanguageId;
 DbHelper dbHelper;
     public FragmentFillBlanks() {
-        // Required empty public constructor
+
     }
 
 
@@ -46,7 +46,8 @@ DbHelper dbHelper;
         if (bundle != null) {
             firstLanguageId = bundle.getString("firstLanguageId");
             secondLanguageId = bundle.getString("secondLanguageId");
-            Cursor cursor = dbHelper.getAnswersTasksFillInTheBlanksTable("1");
+
+
 
 
 

@@ -8,6 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.CancellationSignal;
 
 import com.example.a30secondsgame.Models.Models.*;
+
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
@@ -263,29 +268,166 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + tableName + "where language_id = "+ languageId, null);
     }
-
-    public Cursor getAnswersTasksFillInTheBlanksTable(String languageId) {
-        return getTable("ANSWERS_TASKS_FILL_IN_THE_BLANKS", languageId);
+//todo popraw to debilu po get zwraca tablice tablic
+    public Cursor[] getAnswersTasksFillInTheBlanksTable(String firstLanguageId, String secondLanguageId) {
+        Cursor[] table = new Cursor[2];
+        table[0] = getTable("ANSWERS_TASKS_FILL_IN_THE_BLANKS", firstLanguageId);
+        table[1]= getTable("ANSWERS_TASKS_FILL_IN_THE_BLANKS", secondLanguageId);
+        return table;
     }
 
-    public Cursor getQuestionsTasksFillInTheBlanksTable(String languageId) {
-        return getTable("QUESTIONS_TASKS_FILL_IN_THE_BLANK", languageId);
+    public String[][] saveAnswersTasksFillInTheBlanks(String firstLanguageId, String secondLanguageId)
+    {
+        Cursor[] tables = getAnswersTasksFillInTheBlanksTable(firstLanguageId, secondLanguageId);
+        String[][] stringArray = new String[2][];
+        for (int i = 0; i < tables.length; i++) {
+            ArrayList<String> rows = new ArrayList<>();
+            if (tables[i] != null && tables[i].moveToFirst()) {
+                do {
+                    StringBuilder row = new StringBuilder();
+                    for (int j = 0; j < tables[i].getColumnCount(); j++) {
+                        row.append(tables[i].getString(j)).append(",");
+                    }
+                    rows.add(row.toString());
+                } while (tables[i].moveToNext());
+            }
+            stringArray[i] = rows.toArray(new String[0]);
+        }
+        return stringArray;
     }
 
-    public Cursor getAnswersTasksTranslateSentencesTable(String languageId) {
-        return getTable("ANSWERS_TASKS_TRANSLATE_SENTENCES", languageId);
+    public Cursor[] getQuestionsTasksFillInTheBlanksTable(String firstLanguageId, String secondLanguageId) {
+        Cursor[] table = new Cursor[2];
+        table[0] = getTable("QUESTIONS_TASKS_FILL_IN_THE_BLANK", firstLanguageId);
+        table[1] = getTable("QUESTIONS_TASKS_FILL_IN_THE_BLANK", secondLanguageId);
+        return table;
     }
 
-    public Cursor getAnswersTasksMultipleChoiceTable(String languageId) {
-        return getTable("ANSWERS_TASKS_MULTIPLE_CHOICE", languageId);
+    public String[][] saveQuestionsTasksFillInTheBlanksToStringArray(String firstLanguage, String secondLanguage)
+    {
+        Cursor[] tables = getQuestionsTasksFillInTheBlanksTable(firstLanguage, secondLanguage);
+        String[][] stringArray = new String[2][];
+        for (int i = 0; i < tables.length; i++) {
+            ArrayList<String> rows = new ArrayList<>();
+            if (tables[i] != null && tables[i].moveToFirst()) {
+                do {
+                    StringBuilder row = new StringBuilder();
+                    for (int j = 0; j < tables[i].getColumnCount(); j++) {
+                        row.append(tables[i].getString(j)).append(",");
+                    }
+                    rows.add(row.toString());
+                } while (tables[i].moveToNext());
+            }
+            stringArray[i] = rows.toArray(new String[0]);
+        }
+        return stringArray;
     }
 
-    public Cursor getQuestionsTasksMultipleChoiceTable(String languageId) {
-        return getTable("QUESTIONS_TASKS_MULTIPLE_CHOICE", languageId);
+    public Cursor[] getAnswersTasksTranslateSentencesTable(String firstLanguageId, String secondLanguageId) {
+        Cursor[] table = new Cursor[2];
+        table[0]= getTable("ANSWERS_TASKS_TRANSLATE_SENTENCES", firstLanguageId);
+        table[1]= getTable("ANSWERS_TASKS_TRANSLATE_SENTENCES", secondLanguageId);
+
+        return table;
+    }
+    public String[][] saveAnswersTaskTranslateSentencesToStringArray(String firsLanguageId, String secondLanguageId)
+    {
+        Cursor[] tables = getAnswersTasksTranslateSentencesTable(firsLanguageId, secondLanguageId);
+        String[][] stringArray = new String[2][];
+        for (int i = 0; i < tables.length; i++) {
+            ArrayList<String> rows = new ArrayList<>();
+            if (tables[i] != null && tables[i].moveToFirst()) {
+                do {
+                    StringBuilder row = new StringBuilder();
+                    for (int j = 0; j < tables[i].getColumnCount(); j++) {
+                        row.append(tables[i].getString(j)).append(",");
+                    }
+                    rows.add(row.toString());
+                } while (tables[i].moveToNext());
+            }
+            stringArray[i] = rows.toArray(new String[0]);
+        }
+        return stringArray;
     }
 
-    public Cursor getAnswersTasksMatchSynonymsTable(String languageId) {
-        return getTable("ANSWERS_TASKS_MATCH_SYNONYMS", languageId);
+    public Cursor[] getAnswersTasksMultipleChoiceTable(String firstLanguageId, String secondLanguageId) {
+        Cursor[] table = new Cursor[2];
+        table[0] = getTable("ANSWERS_TASKS_MULTIPLE_CHOICE", firstLanguageId);
+        table[1] = getTable("ANSWERS_TASKS_MULTIPLE_CHOICE", secondLanguageId);
+
+        return table;
+    }
+    public String[][] saveAnswersTasksMultipleChoiceToStringArray(String firstLanguageId, String secondLanguageId) {
+        Cursor[] tables = getAnswersTasksMultipleChoiceTable(firstLanguageId, secondLanguageId);
+        String[][] stringArray = new String[2][];
+        for (int i = 0; i < tables.length; i++) {
+            ArrayList<String> rows = new ArrayList<>();
+            if (tables[i] != null && tables[i].moveToFirst()) {
+                do {
+                    StringBuilder row = new StringBuilder();
+                    for (int j = 0; j < tables[i].getColumnCount(); j++) {
+                        row.append(tables[i].getString(j)).append(",");
+                    }
+                    rows.add(row.toString());
+                } while (tables[i].moveToNext());
+            }
+            stringArray[i] = rows.toArray(new String[0]);
+        }
+        return stringArray;
+    }
+    public Cursor[] getQuestionsTasksMultipleChoiceTable(String firstLanguageId, String secondLanguageId ) {
+        Cursor[] table = new Cursor[2];
+        table[0]= getTable("QUESTIONS_TASKS_MULTIPLE_CHOICE", firstLanguageId);
+        table[1]= getTable("QUESTIONS_TASKS_MULTIPLE_CHOICE", secondLanguageId);
+        return table;
+}
+public String[][] saveQuestionsTasksMultipleChoiceToStringArray(String firstLanguageId, String secondLanguageId)
+{
+    Cursor[] tables = getQuestionsTasksMultipleChoiceTable(firstLanguageId, secondLanguageId);
+    String[][] stringArray = new String[2][];
+    for (int i = 0; i < tables.length; i++) {
+        ArrayList<String> rows = new ArrayList<>();
+        if (tables[i] != null && tables[i].moveToFirst()) {
+            do {
+                StringBuilder row = new StringBuilder();
+                for (int j = 0; j < tables[i].getColumnCount(); j++) {
+                    row.append(tables[i].getString(j)).append(",");
+                }
+                rows.add(row.toString());
+            } while (tables[i].moveToNext());
+        }
+        stringArray[i] = rows.toArray(new String[0]);
+    }
+    return stringArray;
+}
+
+public String[][] saveAnswersTasksMatchSynonymsToStringArray(String firstLanguageId, String secondLanguageId)
+{
+    Cursor[] tables = getAnswersTasksMatchSynonymsTable(firstLanguageId, secondLanguageId);
+    String[][] stringArray = new String[2][];
+    for(int i = 0; i<tables.length; i++)
+    {
+        ArrayList<String> rows = new ArrayList<>();
+        if(tables[i] != null &&  tables[i].moveToFirst())
+        {
+            do{
+                StringBuilder row = new StringBuilder();
+                for( int j = 0; j<tables[i].getColumnCount();j++)
+                {
+                    row.append(tables[i].getString(j)).append(",");
+                }
+                rows.add(row.toString());
+            }while (tables[i].moveToNext());
+        }
+        stringArray[i] = rows.toArray(new String[0]);
+    }
+    return stringArray;
+}
+    public Cursor[] getAnswersTasksMatchSynonymsTable(String firstLanguageId, String secondLanguageId) {
+       Cursor[] table = new Cursor[2];
+        table[0]= getTable("ANSWERS_TASKS_MATCH_SYNONYMS", firstLanguageId);
+        table[1]= getTable("ANSWERS_TASKS_MATCH_SYNONYMS", secondLanguageId);
+        return table;
     }
 
     public Cursor getLanguagesTable() {
@@ -294,13 +436,12 @@ public class DbHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM languages";
         return db.rawQuery(query, null);
     }
-    // DbHelper.java
+
     public Cursor getAnswersTasksMatchSynonymsTable(int languageId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT answer1, answer2 FROM ANSWERS_TASKS_MATCH_SYNONYMS WHERE language_id = ?";
         return db.rawQuery(query, new String[]{String.valueOf(languageId)});
     }
-
 
 
 }
