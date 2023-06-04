@@ -6,8 +6,10 @@ import android.os.Bundle;
 
 import com.example.a30secondsgame.FragmentsGame.FragmentFillBlanks;
 import com.example.a30secondsgame.FragmentsGame.FragmentMatchSynonyms;
+import com.example.a30secondsgame.FragmentsGame.FragmentMultipleChoice;
 import com.example.a30secondsgame.FragmentsStartPage.FragmentLogin;
 import com.example.a30secondsgame.FragmentsStartPage.FragmentRegister;
+import com.example.a30secondsgame.Models.Models;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.IntRange;
@@ -31,6 +33,7 @@ import com.example.a30secondsgame.databinding.ActivityGameBinding;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -40,6 +43,9 @@ public class GameActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
     DbHelper dbHelper;
+    List<Models.QuestionTaskMultipleChoice> test = new ArrayList<>();
+    List<Models.AnswerTaskMultipleChoice> test2 = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +53,13 @@ public class GameActivity extends AppCompatActivity {
 
 
         dbHelper = new DbHelper(this);
+
         this.addFragment("1", "2");
+        test = dbHelper.saveQuestionsTasksMultipleChoiceToObjects("1");
+        test2 = dbHelper.saveAnswersTasksMultipleChoiceToObjectArray("1");
+
+        String a = "a";
+
 
     }
 
@@ -59,9 +71,6 @@ public class GameActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("firstLanguageId", "1");
         bundle.putString("secondLanguageId", "2");
-
-
-
          fragment = new FragmentFillBlanks();
         fragment.setArguments(bundle);
         fragmentManager = getSupportFragmentManager();

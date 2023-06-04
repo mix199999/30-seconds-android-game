@@ -123,13 +123,13 @@ public class Models
         private int id;
         private int taskId;
         private int languageId;
-        private String answerText;
+        private String answer_text;
         private int isCorrect;
         public AnswerTaskFillInTheBlanks(int id, int taskId, int languageId, String answerText, int isCorrect) {
             this.id = id;
             this.taskId = taskId;
             this.languageId = languageId;
-            this.answerText = answerText;
+            this.answer_text = answerText;
             this.isCorrect = isCorrect;
         }
 
@@ -158,12 +158,12 @@ public class Models
             this.languageId = languageId;
         }
 
-        public String getAnswerText() {
-            return answerText;
+        public String getAnswer_text() {
+            return answer_text;
         }
 
-        public void setAnswerText(String answerText) {
-            this.answerText = answerText;
+        public void setAnswer_text(String answer_text) {
+            this.answer_text = answer_text;
         }
 
         public int isCorrect() {
@@ -342,13 +342,13 @@ public class Models
         private int id;
         private int taskId;
         private int languageId;
-        private String answerText;
+        private String answer_text;
         private int isCorrect;
         public AnswerTaskMultipleChoice(int id, int taskId, int languageId, String answerText, int isCorrect) {
             this.id = id;
             this.taskId = taskId;
             this.languageId = languageId;
-            this.answerText = answerText;
+            this.answer_text = answerText;
             this.isCorrect = isCorrect;
         }
 
@@ -377,12 +377,12 @@ public class Models
             this.languageId = languageId;
         }
 
-        public String getAnswerText() {
-            return answerText;
+        public String getAnswer_text() {
+            return answer_text;
         }
 
-        public void setAnswerText(String answerText) {
-            this.answerText = answerText;
+        public void setAnswer_text(String answer_text) {
+            this.answer_text = answer_text;
         }
 
         public int isCorrect() {

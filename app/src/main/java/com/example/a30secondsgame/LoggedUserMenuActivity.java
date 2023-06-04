@@ -79,7 +79,8 @@ public class LoggedUserMenuActivity extends AppCompatActivity implements  Fragme
         if (asyncOperationsCompleted == 5) {
             Toast.makeText(this, "udalo pobrac sie wszystkie dane", Toast.LENGTH_SHORT).show();
             dbHelper = new DbHelper(this);
-            loadDataToLocalDb();
+            //todo odkomentować ogarnać jak zrobić synchronizację co x dni
+         //   loadDataToLocalDb();
 
         }
     }
