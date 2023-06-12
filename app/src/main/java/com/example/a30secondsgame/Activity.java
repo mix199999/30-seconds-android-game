@@ -31,6 +31,9 @@ public class Activity extends AppCompatActivity implements CallbackFragment, Fra
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
+
+    private ConfigManager configManager;
+
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     @Override
@@ -50,7 +53,8 @@ public class Activity extends AppCompatActivity implements CallbackFragment, Fra
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragmentContainer, fragment);
         fragmentTransaction.commit();
-
+        configManager = new ConfigManager(getApplicationContext());
+        configManager.readConfigFileOrCreateNew();
 
     }
 
@@ -94,9 +98,13 @@ public class Activity extends AppCompatActivity implements CallbackFragment, Fra
 
                     if (jsonResponse.has("message")) {
                         // Zalogowano pomyślnie
+
+                        configManager.setLoginInConfig(user.getUsername());
+                        configManager.setPasswordInConfig(user.getPassword());
                         Intent intent = new Intent(Activity.this, LoggedUserMenuActivity.class);
                         intent.putExtra("user", user);
                         startActivity(intent);
+                        finish();
                         Toast.makeText(Activity.this, "Zalogowano pomyślnie", Toast.LENGTH_SHORT).show();
                     } else if (jsonResponse.has("error")) {
                         // Błąd logowania

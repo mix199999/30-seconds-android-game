@@ -8,8 +8,8 @@
     >
 
     <LinearLayout
-        android:layout_width="241dp"
-        android:layout_height="223dp"
+        android:layout_width="373dp"
+        android:layout_height="376dp"
         android:orientation="vertical"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -17,8 +17,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
-
+        <TextView
+            android:layout_width="159dp"
+            android:layout_height="159dp"
+            android:layout_gravity="center"
+            android:background="@drawable/round_button"
+            android:fontFamily="@font/roboto"
+            android:gravity="center"
+            android:text=" 30 \nSeconds!"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="30dp" />
         <EditText
+            android:gravity="center"
             android:id="@+id/usernameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,7 +41,9 @@
             app:layout_constraintTop_toTopOf="parent"
 
             />
+
         <EditText
+            android:gravity="center"
             android:id="@+id/emailText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,6 +57,7 @@
             />
 
         <EditText
+            android:gravity="center"
             android:id="@+id/passwordText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,10 +71,14 @@
 
 
         <Button
+            android:layout_marginTop="10dp"
             android:id="@+id/registerBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounded_button"
+            android:fontFamily="@font/roboto"
             android:text="Register"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/loginBtn"
             app:layout_constraintStart_toStartOf="@+id/loginBtn" />

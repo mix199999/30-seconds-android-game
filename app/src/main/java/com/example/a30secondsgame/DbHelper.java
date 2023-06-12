@@ -347,32 +347,8 @@ public class DbHelper extends SQLiteOpenHelper {
         return answers;
     }
 
-    public Cursor getAnswersTasksTranslateSentencesTable(String firstLanguageId, String secondLanguageId) {
 
 
-        return getTable("ANSWERS_TASKS_TRANSLATE_SENTENCES", secondLanguageId);
-
-
-    }
-    public String[] saveTaskTranslateSentencesToStringArray(String firsLanguageId, String secondLanguageId)
-    {
-        Cursor table = getAnswersTasksTranslateSentencesTable(firsLanguageId, secondLanguageId);
-        String[] stringArray;
-
-            ArrayList<String> rows = new ArrayList<>();
-            if (table != null && table.moveToFirst()) {
-                do {
-                    StringBuilder row = new StringBuilder();
-                    for (int j = 0; j < table.getColumnCount(); j++) {
-                        row.append(table.getString(j)).append(",");
-                    }
-                    rows.add(row.toString());
-                } while (table.moveToNext());
-            }
-            stringArray = rows.toArray(new String[0]);
-
-        return stringArray;
-    }
 
     public Cursor getAnswersTasksMultipleChoiceTable(String languageId) {
 
@@ -444,33 +420,68 @@ public class DbHelper extends SQLiteOpenHelper {
         return questions;
     }
 
-public String[]saveTasksMatchSynonymsToStringArray(String firstLanguageId)
-{
-    Cursor cursor = getAnswersTasksMatchSynonymsTable(firstLanguageId);
-    String[] stringArray;
 
-        ArrayList<String> rows = new ArrayList<>();
-        if(cursor != null &&  cursor.moveToFirst())
-        {
-            do{
-                StringBuilder row = new StringBuilder();
-                for( int j = 0; j<cursor.getColumnCount();j++)
-                {
-                    row.append(cursor.getString(j)).append(",");
-                }
-                rows.add(row.toString());
-            }while (cursor.moveToNext());
-        }
-        stringArray = rows.toArray(new String[0]);
-
-    return stringArray;
-}
     public Cursor getAnswersTasksMatchSynonymsTable(String firstLanguageId) {
 
 
         return getTable("ANSWERS_TASKS_MATCH_SYNONYMS", firstLanguageId);
 
     }
+
+
+    public List<AnswerTaskMatchSynonyms> saveAnswersTasksMatchSynonymsToObjects(String languageId)
+    {
+        Cursor table = getAnswersTasksMatchSynonymsTable(languageId);
+        List<AnswerTaskMatchSynonyms> answers = new ArrayList<>();
+
+        if(table != null && table.moveToFirst())
+        {
+            do {
+
+                    answers.add(new AnswerTaskMatchSynonyms(
+                            table.getInt(0), //id
+                            table.getInt(1), // task id
+                            table.getInt(2), // language id
+                            table.getString(3), // ans1
+                            table.getString(4) // ans2
+                    ));
+
+            }while (table.moveToNext());
+        }
+        return answers;
+    }
+
+
+    public Cursor getAnswersTasksTranslateSentences(String languageId)
+    {
+        return getTable("ANSWERS_TASKS_TRANSLATE_SENTENCES", languageId);
+    }
+
+    public List<AnswerTaskTranslateSentences> saveAnswersTasksTranslateSentencesToObjects(String languageId)
+    {
+        Cursor table = getAnswersTasksTranslateSentences(languageId);
+        List<AnswerTaskTranslateSentences> answers = new ArrayList<>();
+
+        if(table != null && table.moveToFirst())
+        {
+            do
+            {
+                answers.add(new AnswerTaskTranslateSentences(
+                        table.getInt(0),
+                        table.getInt(1),
+                        table.getInt(2),
+                        table.getString(3)
+
+                ));
+
+            }while(table.moveToNext());
+        }
+        return answers;
+
+    }
+
+
+
 
     public Cursor getLanguagesTable() {
 
@@ -479,11 +490,7 @@ public String[]saveTasksMatchSynonymsToStringArray(String firstLanguageId)
         return db.rawQuery(query, null);
     }
 
-    public Cursor getAnswersTasksMatchSynonymsTable(int languageId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT answer1, answer2 FROM ANSWERS_TASKS_MATCH_SYNONYMS WHERE language_id = ?";
-        return db.rawQuery(query, new String[]{String.valueOf(languageId)});
-    }
+
 
 
 }

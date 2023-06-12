@@ -1,5 +1,6 @@
 package com.example.a30secondsgame.FragmentsGame;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,11 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.a30secondsgame.DbHelper;
 import com.example.a30secondsgame.GameActivity;
 import com.example.a30secondsgame.Models.Models;
+import com.example.a30secondsgame.OnButtonClickListener;
 import com.example.a30secondsgame.R;
 
 import java.util.ArrayList;
@@ -28,16 +31,25 @@ public class FragmentMultipleChoice extends Fragment {
     CheckBox firstAnswerCheck, secondAnswerCheck, thirdAnswerCheck;
     Button checkBt;
     TextView questionTextView;
+
+    LinearLayout checkboxesContainer;
     String firstLanguageId;
     String secondLanguageId;
 
-
+    private OnButtonClickListener listener;
     DbHelper dbHelper;
     private int currentTaskId;
     private Models.QuestionTaskMultipleChoice currentTaskQuestion ;
     private List<Models.AnswerTaskMultipleChoice> currentTaskAnswers = new ArrayList<>();
 
-
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            listener = (OnButtonClickListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnButtonClickListener");
+        }
+    }
 
     List<Models.QuestionTaskMultipleChoice> tasksQuestion= new ArrayList<>();
     List<Models.AnswerTaskMultipleChoice> tasksAnswers = new ArrayList<>();
@@ -72,26 +84,41 @@ public class FragmentMultipleChoice extends Fragment {
             firstLanguageId = bundle.getString("firstLanguageId");
 
         }
-        else
-        {
-           // return;
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_multiple_choice, container, false);
-        dbHelper = ((GameActivity) requireActivity()).getDbHelper();
-        tasksQuestion = dbHelper. saveQuestionsTasksMultipleChoiceToObjects("1");
-        tasksAnswers = dbHelper.saveAnswersTasksMultipleChoiceToObjectArray("1");
 
-        checkBt = view.findViewById(R.id.checkBt);
-        firstAnswerCheck = view.findViewById(R.id.firstAnswerCheck);
-        secondAnswerCheck = view.findViewById(R.id.secondAnswerCheck);
-        thirdAnswerCheck = view.findViewById(R.id.thirdAnswerCheck);
-        questionTextView = view.findViewById(R.id.questionTextView);
-        loadQuestionAndAnswers();
+        View view = inflater.inflate(R.layout.fragment_multiple_choice, container, false);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            firstLanguageId =bundle.getString("firstLanguageId");
+
+            dbHelper = ((GameActivity) requireActivity()).getDbHelper();
+            tasksQuestion = dbHelper. saveQuestionsTasksMultipleChoiceToObjects(firstLanguageId);
+            tasksAnswers = dbHelper.saveAnswersTasksMultipleChoiceToObjectArray(firstLanguageId);
+
+            checkBt = view.findViewById(R.id.checkBt);
+            firstAnswerCheck = view.findViewById(R.id.firstAnswerCheck);
+            secondAnswerCheck = view.findViewById(R.id.secondAnswerCheck);
+            thirdAnswerCheck = view.findViewById(R.id.thirdAnswerCheck);
+            questionTextView = view.findViewById(R.id.questionTextView);
+            checkboxesContainer = view.findViewById(R.id.checkboxesContainer);
+            loadQuestionAndAnswers();
+
+            checkBt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    checkIsCorrect();
+                }
+            });
+        }
+
+       
+
         return view;
     }
 
@@ -104,8 +131,11 @@ public class FragmentMultipleChoice extends Fragment {
         addAnswersByTaskId(tasksAnswers, currentTaskId);
         questionTextView.setText(currentTaskQuestion.getQuestionText());
         firstAnswerCheck.setText(currentTaskAnswers.get(0).getAnswer_text());
+        firstAnswerCheck.setTag(currentTaskAnswers.get(0));
        secondAnswerCheck.setText(currentTaskAnswers.get(1).getAnswer_text());
+       secondAnswerCheck.setTag(currentTaskAnswers.get(1));
         thirdAnswerCheck.setText(currentTaskAnswers.get(2).getAnswer_text());
+        thirdAnswerCheck.setTag(currentTaskAnswers.get(2));
 
     }
 
@@ -139,11 +169,39 @@ public class FragmentMultipleChoice extends Fragment {
     Models.QuestionTaskMultipleChoice getQuestionsByTaskId(int taskId) {
        Models.QuestionTaskMultipleChoice currentQuestion = null;
         for (Models.QuestionTaskMultipleChoice question : tasksQuestion) {
-            if (question.getTaskId() == taskId && question.getLanguageId() == 1) {
+            if (question.getTaskId() == taskId ) {
                 currentQuestion = question;
             }
 
         }
         return currentQuestion;
+    }
+
+
+
+
+
+    void checkIsCorrect() {
+        boolean allCorrectChecked = true;
+        boolean incorrectChecked = false;
+        for (int i = 0; i < checkboxesContainer.getChildCount(); i++) {
+            View view = checkboxesContainer.getChildAt(i);
+            if (view instanceof CheckBox && view.getTag() != null) {
+                Object tagObject = view.getTag();
+                if (tagObject instanceof Models.AnswerTaskMultipleChoice) {
+                    Models.AnswerTaskMultipleChoice answer = (Models.AnswerTaskMultipleChoice) tagObject;
+                    if (answer.isCorrect() == 1 && !((CheckBox) view).isChecked()) {
+                        allCorrectChecked = false;
+                    } else if (answer.isCorrect() == 0 && ((CheckBox) view).isChecked()) {
+                        incorrectChecked = true;
+                    }
+                }
+            }
+        }
+        if (allCorrectChecked && !incorrectChecked) {
+            listener.onButtonClick(1);
+        } else {
+            listener.onButtonClick(0);
+        }
     }
 }

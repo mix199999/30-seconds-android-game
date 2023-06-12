@@ -1,5 +1,6 @@
 package com.example.a30secondsgame.FragmentsGame;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.example.a30secondsgame.DbHelper;
 import com.example.a30secondsgame.GameActivity;
 import com.example.a30secondsgame.Models.Models;
+import com.example.a30secondsgame.OnButtonClickListener;
 import com.example.a30secondsgame.R;
 
 import java.util.ArrayList;
@@ -25,19 +27,29 @@ import java.util.Random;
 
 public class FragmentFillBlanks extends Fragment {
 
-TextView questionText;
-Button firstAnswerBt, secondAnswerBt, thirdAnswerBt;
-Cursor[] cursor;
+    TextView questionText;
+    Button firstAnswerBt, secondAnswerBt, thirdAnswerBt;
+    Cursor[] cursor;
+    String firstLanguageId, secondLanguageId;
+    DbHelper dbHelper;
 
-String firstLanguageId, secondLanguageId;
 
-DbHelper dbHelper;
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            listener = (OnButtonClickListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnButtonClickListener");
+        }
+    }
     private Models.QuestionTaskFillInTheBlanks currentTaskQuestion ;
     private List<Models.AnswerTaskFillInTheBlanks> currentTaskAnswers = new ArrayList<>();
     List<Models.QuestionTaskFillInTheBlanks> tasksQuestion= new ArrayList<>();
     List<Models.AnswerTaskFillInTheBlanks> tasksAnswers = new ArrayList<>();
     int currentTaskId;
+    private OnButtonClickListener listener;
+
     public FragmentFillBlanks() {
 
     }
@@ -59,14 +71,6 @@ DbHelper dbHelper;
         Bundle bundle = getArguments();
         if (bundle != null) {
             firstLanguageId = bundle.getString("firstLanguageId");
-
-
-
-
-
-
-
-
 
         }
     }
@@ -101,10 +105,37 @@ DbHelper dbHelper;
         addAnswersByTaskId(tasksAnswers, currentTaskId);
         questionText.setText(currentTaskQuestion.getQuestionText());
         firstAnswerBt.setText(currentTaskAnswers.get(0).getAnswer_text());
+        firstAnswerBt.setTag(currentTaskAnswers.get(0));
         secondAnswerBt.setText(currentTaskAnswers.get(1).getAnswer_text());
+        secondAnswerBt.setTag(currentTaskAnswers.get(1));
         thirdAnswerBt.setText(currentTaskAnswers.get(2).getAnswer_text());
+        thirdAnswerBt.setTag(currentTaskAnswers.get(2));
+
+        firstAnswerBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Models.AnswerTaskFillInTheBlanks answer = (Models.AnswerTaskFillInTheBlanks) v.getTag();
+                checkIsCorrect(answer);
+            }
+        });
 
 
+        secondAnswerBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Models.AnswerTaskFillInTheBlanks answer = (Models.AnswerTaskFillInTheBlanks) v.getTag();
+                checkIsCorrect(answer);
+            }
+        });
+
+        thirdAnswerBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Models.AnswerTaskFillInTheBlanks answer = (Models.AnswerTaskFillInTheBlanks) v.getTag();
+                checkIsCorrect(answer);
+            }
+        });
 
     }
 
@@ -121,22 +152,20 @@ DbHelper dbHelper;
         for (Models.QuestionTaskFillInTheBlanks question : tasksQuestion) {
             taskIds.add(question.getTaskId());
         }
-
-        // Remove duplicates
         Collections.sort(taskIds);
         taskIds = new ArrayList<>(new LinkedHashSet<>(taskIds));
 
-        // Choose a random index
+
         int randomIdx = randomNumber(taskIds.size() - 1);
 
-        // Return the task_id at that index
+
         return taskIds.get(randomIdx);
     }
 
 
     void addAnswersByTaskId(List<Models.AnswerTaskFillInTheBlanks> tasksAnswers, int currentTaskId) {
         for (Models.AnswerTaskFillInTheBlanks answer : tasksAnswers) {
-            if (answer.getTaskId() == currentTaskId && answer.getLanguageId() == 1) {
+            if (answer.getTaskId() == currentTaskId ) {
                 currentTaskAnswers.add(answer);
             }
         }
@@ -146,12 +175,26 @@ DbHelper dbHelper;
     Models.QuestionTaskFillInTheBlanks getQuestionsByTaskId(int taskId) {
         Models.QuestionTaskFillInTheBlanks currentQuestion = null;
         for (Models.QuestionTaskFillInTheBlanks question : tasksQuestion) {
-            if (question.getTaskId() == taskId && question.getLanguageId() == 1) {
+            if (question.getTaskId() == taskId && question.getLanguageId() == Integer.parseInt(firstLanguageId)) {
                 currentQuestion = question;
             }
 
         }
         return currentQuestion;
+    }
+
+    void checkIsCorrect(Models.AnswerTaskFillInTheBlanks answer)
+    {
+
+        if(answer.isCorrect() == 1)
+        {
+            listener.onButtonClick(1);
+
+        } else if (answer.isCorrect() == 0)
+        {
+            listener.onButtonClick(0);
+        }
+
     }
 
 }

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:id="@+id/constraintLayoutFillBlanks"
+    tools:context=".FragmentsLoggedUser.FragmentSettings">
+
+
+    <ImageView
+        android:layout_width="140dp"
+        android:layout_height="138dp"
+        android:background="@drawable/round_button"
+        tools:layout_editor_absoluteX="135dp"
+        tools:layout_editor_absoluteY="30dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/userAvatar"
+
+        >
+
+
+    </ImageView>
+
+    <TextView
+        android:id="@+id/usernameText"
+        android:textSize="18dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="userName"
+        app:layout_constraintTop_toBottomOf="@+id/userAvatar"
+        app:layout_constraintRight_toRightOf="@+id/userAvatar"
+        app:layout_constraintLeft_toLeftOf="@+id/userAvatar"
+        tools:layout_editor_absoluteX="173dp">
+
+    </TextView>
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Which language you want to learn?"
+        android:id="@+id/primaryTextView"
+        tools:layout_editor_absoluteX="99dp"
+        tools:layout_editor_absoluteY="286dp"
+        app:layout_constraintTop_toBottomOf="@+id/usernameText"
+        app:layout_constraintLeft_toLeftOf="@+id/usernameText"
+        app:layout_constraintRight_toRightOf="@+id/usernameText"
+        android:layout_marginTop="50dp"
+        android:textSize="18dp"
+        >
+
+    </TextView>
+
+    <Spinner
+
+        app:layout_constraintTop_toBottomOf="@+id/primaryTextView"
+        app:layout_constraintRight_toRightOf="@+id/primaryTextView"
+        app:layout_constraintLeft_toLeftOf="@+id/primaryTextView"
+        android:layout_marginTop="12dp"
+        android:id="@+id/primaryLanguageSpinner"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="315dp"
+
+
+        />
+
+    <TextView
+        android:id="@+id/secondaryTextView"
+        android:textSize="18dp"
+        app:layout_constraintTop_toBottomOf="@+id/primaryLanguageSpinner"
+        app:layout_constraintRight_toRightOf="@+id/primaryLanguageSpinner"
+        app:layout_constraintLeft_toLeftOf="@+id/primaryLanguageSpinner"
+        android:layout_marginTop="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select your native language"
+        tools:layout_editor_absoluteX="99dp"
+        tools:layout_editor_absoluteY="286dp">
+
+    </TextView>
+
+
+
+    <Spinner
+
+        android:id="@+id/secondaryLanguageSpinner"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintLeft_toLeftOf="@+id/secondaryTextView"
+        app:layout_constraintRight_toRightOf="@+id/secondaryTextView"
+        app:layout_constraintTop_toBottomOf="@id/secondaryTextView"
+        app:layout_constraintVertical_bias="0.037" />
+
+    <Button
+        android:id="@+id/saveChangesBt"
+        android:layout_width="188dp"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_button"
+        android:text="Save Changes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/secondaryLanguageSpinner"
+        app:layout_constraintRight_toRightOf="@+id/secondaryLanguageSpinner"
+        app:layout_constraintTop_toBottomOf="@id/secondaryLanguageSpinner"
+        app:layout_constraintVertical_bias="0.304"
+        android:textColor="@color/white"
+        ></Button>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,10 +5,12 @@
     <item android:title="Leaderboard"
         android:icon="@drawable/baseline_format_list_numbered_24"
         android:id="@+id/leaderboard"
+
         />
     <item android:title="Home"
         android:icon="@drawable/baseline_home_24"
         android:id="@+id/home"
+
 
         />
     <item android:title="Settings"

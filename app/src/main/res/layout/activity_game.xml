@@ -5,13 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/pink_blue_gradient"
-    tools:context=".Activity">
+    tools:context=".Activity"
+
+
+    >
 
 
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="407dp"
         android:layout_height="706dp"
+
 
 
         app:layout_constraintBottom_toTopOf="@+id/timerTextView"
@@ -21,6 +25,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
+        android:textColor="@color/white"
         android:id="@+id/timerTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
