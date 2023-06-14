@@ -43,5 +43,6 @@ Służy on do wybrania przez użytkownika języka którego chce się nauczyć or
 
 ### Game
 Ostatnia Aktywność odpowiada za obsłużenie gry. Rdzeniem ten aktywności jest losowanie a następnie ładowanie fragmentów będącymi różnymi typami zadań. 
-[![Game fragments](https://i.ibb.co/bXqfG3Z/gamefragment.png)](https://ibb.co
+
+[![Game fragments](https://i.ibb.co/bXqfG3Z/gamefragment.png)](https://ibb.co)
 
