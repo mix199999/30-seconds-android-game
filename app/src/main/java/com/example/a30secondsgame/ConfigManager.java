@@ -11,7 +11,9 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 public class ConfigManager {
     private static final String CONFIG_FILE_NAME = "config.json";
     private Context context;
@@ -207,4 +209,10 @@ public class ConfigManager {
 
 
 
+
+
+
+
 }
+
+

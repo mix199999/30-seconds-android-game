@@ -98,9 +98,8 @@ public class Activity extends AppCompatActivity implements CallbackFragment, Fra
 
                     if (jsonResponse.has("message")) {
                         // Zalogowano pomyślnie
-
                         configManager.setLoginInConfig(user.getUsername());
-                        configManager.setPasswordInConfig(user.getPassword());
+                        configManager.setPasswordInConfig(DataHashing.hashString(user.getPassword()));
                         Intent intent = new Intent(Activity.this, LoggedUserMenuActivity.class);
                         intent.putExtra("user", user);
                         startActivity(intent);
@@ -110,22 +109,50 @@ public class Activity extends AppCompatActivity implements CallbackFragment, Fra
                         // Błąd logowania
                         String errorMessage = jsonResponse.getString("error");
                         Toast.makeText(Activity.this, errorMessage, Toast.LENGTH_LONG).show();
+
                     } else {
                         onError("Nieprawidłowa odpowiedź serwera");
+
                     }
                 } catch (JSONException e) {
                     onError("Nieprawidłowa odpowiedź serwera");
+
                 }
             }
 
             @Override
             public void onError(String error) {
-                Toast.makeText(Activity.this, error, Toast.LENGTH_LONG).show();
+
+                offlineLogin(user);
+
             }
         });
 
         login.execute();
 
+    }
+
+
+    boolean offlineLogin(User user)
+    {
+        String tempLogin = configManager.getLoginFromConfig();
+        if(tempLogin.equals(user.getUsername()) && !configManager.getFirstRunFromConfig().equals("true")) {
+            if (DataHashing.verifyHash(user.getPassword(), configManager.getPasswordFromConfig())) {
+                Intent intent = new Intent(Activity.this, LoggedUserMenuActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+                finish();
+                Toast.makeText(Activity.this, "Jesteś w trybie offline", Toast.LENGTH_SHORT).show();
+                return true;
+            } else
+            {
+                Toast.makeText(Activity.this, "błedne haslo", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+        else
+        { Toast.makeText(Activity.this, "błedny login", Toast.LENGTH_LONG).show();
+            return false;}
     }
 
     @Override

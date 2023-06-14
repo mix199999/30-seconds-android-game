@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.WindowCompat;
@@ -35,10 +36,14 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.a30secondsgame.databinding.ActivityGameBinding;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity implements OnButtonClickListener, OnButtonBackClickListener {
@@ -116,10 +121,6 @@ public class GameActivity extends AppCompatActivity implements OnButtonClickList
             tempIndex = new Random().nextInt(4);
         } while (randomIndex == tempIndex);
         randomIndex = tempIndex;
-
-
-
-
         Fragment fragment;
         Bundle bundle = new Bundle();
         bundle.putString("firstLanguageId", firstLanguageId);
@@ -172,43 +173,55 @@ public class GameActivity extends AppCompatActivity implements OnButtonClickList
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentContainer, fragment);
         fragmentTransaction.commit();
+        updateScoreInTheLeaderboard();
+
+
+
+
+
     }
 
 
-    @Override
-    public void onButtonClick(double value) {
+    private void updateScoreInTheLeaderboard()
+    {
+        Map<String, String> data = new HashMap<>();
+        data.put("username", user.getUsername());
+        data.put("score", Integer.toString(score));
+        ApiService updateScore = new ApiService("/update_score.php", data, new ApiService.ApiResponseCallback() {
+            @Override
+            public void onSuccess(String response) {
+            }
 
-        if (value > 0) {
-            remainingTime += 5 * value * 1000;
-            score += 100 * value;
-        } else if (value == 0) {
-            remainingTime -= 5 * 1000;
-            score -= 100 ;
-        }
 
-        if (timer != null) {
-            timer.cancel();
-        }
+            @Override
+            public void onError(String error) {
 
-        randomFragment();
+
+
+            }
+        });
+
+        updateScore.execute();
+
     }
+
+
+
 
     @Override
     public void onButtonBackClick() {
-        // Zamykamy aktualną aktywność
+
         finish();
 
-        // Tworzymy nowe intent do uruchomienia LoggedUserMenuActivity
         Intent intent = new Intent(this, LoggedUserMenuActivity.class);
         intent.putExtra("user", user);
 
-        // Uruchamiamy LoggedUserMenuActivity poprzez intent
+
         startActivity(intent);
     }
 
     private void loadRandomFragment() {
-        remainingTime = 30000; // 30 sekund
-
+        remainingTime = 30000;
         randomFragment();
     }
 
@@ -238,8 +251,22 @@ public class GameActivity extends AppCompatActivity implements OnButtonClickList
         timerText.setText("Pozostało: " + seconds + " sekund");
     }
 
+    @Override
+    public void onButtonClick(double value) {
 
+        if (value > 0) {
+            remainingTime += 5 * value * 1000;
+            score += 100 * value;
+        } else if (value == 0) {
+            remainingTime -= 5 * 1000;
+            score -= 100 ;
+        }
 
+        if (timer != null) {
+            timer.cancel();
+        }
 
+        randomFragment();
+    }
 
 }

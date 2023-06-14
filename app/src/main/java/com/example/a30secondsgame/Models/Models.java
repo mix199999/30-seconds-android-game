@@ -482,4 +482,51 @@ public class Models
             return answers;
         }
     }
+
+    public static class Leaderboard{
+
+        public static List<Leaderboard> parseLeaderboardFromJson(String json)
+        {
+            List<Leaderboard> leaderboardList = new ArrayList<>();
+            try {
+                JSONArray jsonArray = new JSONArray(json);
+                for (int i = 0; i<jsonArray.length(); i++)
+                {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String username =jsonObject.getString("username");
+                    int score = jsonObject.getInt("score");
+                    Leaderboard player = new Leaderboard(username,score);
+                    leaderboardList.add(player);
+                }
+            }catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return leaderboardList;
+        }
+
+        String username;
+        int score;
+
+        public Leaderboard(String username, int score) {
+            this.username = username;
+            this.score = score;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public int getScore() {
+            return score;
+        }
+
+        public void setScore(int score) {
+            this.score = score;
+        }
+    }
 }

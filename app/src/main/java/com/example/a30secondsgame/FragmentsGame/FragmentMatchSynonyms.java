@@ -93,7 +93,6 @@ public class FragmentMatchSynonyms extends Fragment {
             tasks = dbHelper.saveAnswersTasksMatchSynonymsToObjects(languageId);
 
             constraintLayout = view.findViewById(R.id.constraintLayout);
-            counterTextView = view.findViewById(R.id.counterTextView);
             firstGroupTextViews = new TextView[]{
                     view.findViewById(R.id.textView1),
                     view.findViewById(R.id.textView2),

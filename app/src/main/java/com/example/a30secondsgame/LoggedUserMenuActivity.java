@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.example.a30secondsgame.FragmentsLoggedUser.FragmentHomePage;
+import com.example.a30secondsgame.FragmentsLoggedUser.FragmentLeaderboard;
 import com.example.a30secondsgame.FragmentsLoggedUser.FragmentSettings;
 import com.example.a30secondsgame.Models.Models.*;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -71,6 +72,8 @@ public class LoggedUserMenuActivity extends AppCompatActivity implements  Fragme
 
     User user = null;
     DbHelper dbHelper;
+    int selectedItemId = R.id.home;
+
     private int asyncOperationsCompleted = 0;
 
     Button playBtn;
@@ -92,48 +95,44 @@ public class LoggedUserMenuActivity extends AppCompatActivity implements  Fragme
         obtainQuestionsTaskMultipleChoice();
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.home);
 
-
-
+        bottomNavigationView.setSelectedItemId(selectedItemId);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.home) {
-                    loadHomeFragment();
-                    return true;
-                } else if (item.getItemId() == R.id.settings) {
-                    loadSettingsFragment();
-                    return true;
-                } else if (item.getItemId()== R.id.leaderboard) {
-
-                    loadLeaderboardFragment();
-
+                switch (item.getItemId()) {
+                    case R.id.home:
+                        selectedItemId = R.id.home;
+                        loadHomeFragment();
+                        return true;
+                    case R.id.settings:
+                        selectedItemId = R.id.settings;
+                        loadSettingsFragment();
+                        return true;
+                    case R.id.leaderboard:
+                        selectedItemId = R.id.leaderboard;
+                        loadLeaderboardFragment();
+                        return true;
                 }
-
                 return false;
             }
         });
-
-        configManager = new ConfigManager(getApplicationContext());
-
+       configManager = new ConfigManager(getApplicationContext());
        primaryLanguage = configManager.getPrimaryLanguageFromConfig();
        secondaryLanguage = configManager.getSecondaryLanguageFromConfig();
 
 
     }
 
-    private void loadLeaderboardFragment() {
-    }
+
 
     private void onAsyncOperationCompleted() {
         asyncOperationsCompleted++;
         if (asyncOperationsCompleted == 5) {
             Toast.makeText(this, "udalo pobrac sie wszystkie dane", Toast.LENGTH_SHORT).show();
             dbHelper = new DbHelper(this);
-
-
-            if(configManager.getFirstRunFromConfig().equals("true") ||isDateDifferenceThreeDaysOrMore(configManager.getLastOpenedFromConfig()))
+            if(configManager.getFirstRunFromConfig().equals("true") ||
+                    isDateDifferenceThreeDaysOrMore(configManager.getLastOpenedFromConfig()))
             {
                 loadDataToLocalDb();
                 configManager.setFirstRunInConfig("false");
@@ -158,7 +157,20 @@ public class LoggedUserMenuActivity extends AppCompatActivity implements  Fragme
             return false; // Jeśli wystąpił błąd podczas parsowania daty, zwróć false
         }
     }
-
+    private void loadLeaderboardFragment()
+    {
+        fragment = new FragmentLeaderboard();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userObj", user);
+        fragment.setArguments(bundle);
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentContainer, fragment);
+        fragmentTransaction.commit();
+        configManager = new ConfigManager(getApplicationContext());
+        primaryLanguage = configManager.getPrimaryLanguageFromConfig();
+        secondaryLanguage = configManager.getSecondaryLanguageFromConfig();
+    }
     public void loadHomeFragment()
     {
         fragment = new FragmentHomePage();
@@ -194,8 +206,6 @@ public class LoggedUserMenuActivity extends AppCompatActivity implements  Fragme
     public void onPlayClick()
     {
         showCountdownAnimation();
-        //Intent intent = new Intent(LoggedUserMenuActivity.this, ActivityPlay.class);
-        //startActivity(intent);
     }
 
 
@@ -223,7 +233,7 @@ public class LoggedUserMenuActivity extends AppCompatActivity implements  Fragme
                 startActivity(intent);
                 finish();
             }
-        }, 1500); // Czas trwania animacji (w milisekundach)
+        }, 1500);
     }
 
 

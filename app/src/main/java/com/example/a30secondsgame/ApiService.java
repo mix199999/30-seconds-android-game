@@ -37,7 +37,9 @@ public class ApiService extends AsyncTask<String,Void,String>
 
     }
 
-
+    // Metoda wykonująca zapytanie do API
+    // Tworzy połączenie z podanym adresem URL, wysyła dane i analizuje odpowiedź
+    // Komentarz opisujący kroki wykonywane w tej metodzie
     @Override
     protected String doInBackground(String... params)
     {
@@ -77,7 +79,8 @@ public class ApiService extends AsyncTask<String,Void,String>
             return null;
         }
     }
-
+    // Metoda wywoływana po zakończeniu zapytania
+    // Zawiera logikę obsługi wyniku
     @Override
     protected  void onPostExecute(String result)
     {
@@ -90,7 +93,7 @@ public class ApiService extends AsyncTask<String,Void,String>
             callback.onSuccess(result);
         }
     }
-
+    // Metoda zamieniająca mapę parametrów na ciąg znaków do przesłania w zapytaniu POST
     private String getPostDataString(Map<String, String> params) throws Exception {
         StringBuilder result = new StringBuilder();
         boolean first = true;

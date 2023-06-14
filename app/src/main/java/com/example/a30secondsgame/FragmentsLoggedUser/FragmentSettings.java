@@ -2,7 +2,9 @@ package com.example.a30secondsgame.FragmentsLoggedUser;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.a30secondsgame.ConfigManager;
 import com.example.a30secondsgame.R;
 import com.example.a30secondsgame.User;
@@ -33,7 +38,7 @@ public class FragmentSettings extends Fragment {
     private Spinner primaryLanguageSpinner;
     private Spinner secondaryLanguageSpinner;
 
-    private String firstLanguageId, secondLanguageId;
+    private String firstLanguageId, secondLanguageId, imageUrl;
     TextView userNameTextView;
     Button saveChangesBt;
     int resId;
@@ -78,12 +83,6 @@ public class FragmentSettings extends Fragment {
         userNameTextView = view.findViewById(R.id.usernameText);
         userNameTextView.setText(user.getUsername());
         avatarView = view.findViewById(R.id.userAvatar);
-        String imageName = configManager.getImageNameFromConfig();
-        if(!imageName.equals(""))
-        {
-
-        }
-
 
 
         Country[] countries = {
@@ -92,7 +91,10 @@ public class FragmentSettings extends Fragment {
                 new Country("Germany", R.drawable.germany,4),
                 new Country("Italian", R.drawable.italy,5),
                 new Country("Spanish", R.drawable.spain,3)
+
         };
+
+
 
         CountryArrayAdapter adapter = new CountryArrayAdapter(requireContext(), countries);
         primaryLanguageSpinner.setAdapter(adapter);
@@ -104,25 +106,25 @@ public class FragmentSettings extends Fragment {
             }
             if (countries[i].getLanguageId() == Integer.parseInt(secondLanguageId)) {
                 secondaryLanguageSpinner.setSelection(i);
+                avatarView.setImageResource(countries[i].getFlagResId());
             }
         }
         saveChangesBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 int selectedPrimaryLanguageId = ((Country) primaryLanguageSpinner.getSelectedItem()).getLanguageId();
                 int selectedSecondaryLanguageId = ((Country) secondaryLanguageSpinner.getSelectedItem()).getLanguageId();
                 configManager.setPrimaryLanguageInConfig(Integer.toString(selectedPrimaryLanguageId));
                 configManager.setSecondaryLanguageInConfig(Integer.toString(selectedSecondaryLanguageId));
-                Drawable selectedImage = avatarView.getDrawable();
-                if (selectedImage != null) {
-                    String drawableName = getResources().getResourceEntryName(resId);
 
-                    configManager.setImageNameInConfig(drawableName);
 
-                }
+
             }
         });
+
+
+
+
 
         ImageView userAvatarImageView = view.findViewById(R.id.userAvatar);
         userAvatarImageView.setOnClickListener(new View.OnClickListener() {
@@ -156,6 +158,10 @@ public class FragmentSettings extends Fragment {
         @Override
         public String toString() {
             return name;
+        }
+
+        public int getFlagResId() {
+            return flagResId;
         }
     }
 
@@ -229,14 +235,15 @@ public class FragmentSettings extends Fragment {
             // You can use the selected image here, for example, assign it to an ImageView
             ImageView userAvatarImageView = view.findViewById(R.id.userAvatar);
             userAvatarImageView.setImageDrawable(selectedImage);
-            String drawablePath = selectedImage.toString();
-            String a = "aa";
             dialog.dismiss();
         });
 
         builder.show();
     }
-
+    public String getURLForResource (int resourceId) {
+        //use BuildConfig.APPLICATION_ID instead of R.class.getPackage().getName() if both are not same
+        return Uri.parse("android.resource://"+R.class.getPackage().getName()+"/" +resourceId).toString();
+    }
 
 
 
